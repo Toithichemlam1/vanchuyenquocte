@@ -1,0 +1,119 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Hàng Quốc Tế - Bio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-6 text-center">
+        <div class="container mx-auto px-4">
+            <h1 class="text-2xl font-bold">Gửi Hàng Quốc Tế Từ Việt Nam</h1>
+            <p class="mt-2 text-sm">Nhanh chóng - An toàn - Tiết kiệm</p>
+        </div>
+    </header>
+
+    <!-- Hero Image -->
+    <section class="bg-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <img src="https://github.com/Toithichemlam1/vanchuyenquocte/blob/main/van-chuyen-hang-hoa-quoc-te-7.jpg" alt="Vận chuyển quốc tế" class="mx-auto rounded-lg shadow-lg max-w-full h-48 object-cover">
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-6 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-xl font-semibold text-center mb-4">Chúng Tôi Gửi Hàng Đến</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Japan -->
+                <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                    <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Nhật Bản" class="mx-auto mb-2 rounded-lg h-20 object-cover">
+                    <h3 class="text-lg font-bold">Nhật Bản</h3>
+                    <p class="text-gray-600 text-sm">Tokyo, Osaka, 3-5 ngày</p>
+                </div>
+                <!-- EU -->
+                <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                    <img src="[https://github.com/Toithichemlam1/vanchuyenquocte/blob/main/eu.jpeg]" alt="EU" class="mx-auto mb-2 rounded-lg h-20 object-cover">
+                    <h3 class="text-lg font-bold">EU</h3>
+                    <p class="text-gray-600 text-sm">Đức, Pháp, Ý,...</p>
+                </div>
+                <!-- UK -->
+                <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                    <img src="[https://github.com/Toithichemlam1/vanchuyenquocte/blob/main/Union_Jack__London.webp]" alt="UK" class="mx-auto mb-2 rounded-lg h-20 object-cover">
+                    <h3 class="text-lg font-bold">UK</h3>
+                    <p class="text-gray-600 text-sm">London, 5-7 ngày</p>
+                </div>
+                <!-- China -->
+                <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                    <img src="[https://github.com/Toithichemlam1/vanchuyenquocte/blob/main/Anh_2_Trung_Quoc_co_chinh_sach_tro_cap_de_thuc_day_hoat_dong_kinh_doanh_ban_dem_NYQD.jpg]" alt="Trung Quốc" class="mx-auto mb-2 rounded-lg h-20 object-cover">
+                    <h3 class="text-lg font-bold">Trung Quốc</h3>
+                    <p class="text-gray-600 text-sm">Bắc Kinh, Thượng Hải</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-6 bg-white text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-xl font-semibold mb-4">Liên Hệ Ngay Hôm Nay!</h2>
+            <div class="space-y-4">
+                <a href="https://www.tiktok.com" target="_blank" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Xem TikTok Của Chúng Tôi</a>
+                <a href="https://www.facebook.com" target="_blank" class="block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">Xem Facebook Của Chúng Tôi</a>
+                <a href="https://zalo.me/0352379659" target="_blank" class="block bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">Chat Zalo Ngay</a>
+                <a href="mailto:info@transportvn.com" class="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">Gửi Email</a>
+                <a href="tel:+84352379659" class="block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">Hotline: 0352379659</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 text-center">
+        <div class="container mx-auto px-4">
+            <p class="text-sm">© 2025 Gửi Hàng Quốc Tế. All rights reserved.</p>
+            <p class="text-sm">Hotline: 0352379659 (Tel/Zalo/WhatsApp)</p>
+        </div>
+    </footer>
+</body>
+</html>
